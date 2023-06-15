@@ -2,6 +2,7 @@
 from card import Card
 import signin
 import signup
+from user import *
 
 
 # Criando a classe main, que servirá como "servidor" do programa
@@ -38,19 +39,78 @@ class Main:
             # Acesso à funcionalidade escolhida
             match str(mode):
                 case "CONSULTA":
-                    pass
+                    self.SEARCHSCREEN()
                 case "VENDA":
-                    pass
+                    if uid:
+                        self.INSTANTIATECARD()
+                    else:
+                        print("Não entendi o que quis dizer")
                 case "ADM":
-                    print("TU é o bichão memo hein doido")
+                    if uid == "ADMIN":
+                        self.ADMINSCREEN()
+                    else:
+                        print("Não entendi o que quis dizer")
                     break
                 case "SAIR":
                     break
+                case "CADASTRO":
+                    if not uid:
+                        self.SIGNUP()
+                    else:
+                        print("Não entendi o que quis dizer")
+                case "LOGIN":
+                    if not uid:
+                        self.SIGNIN()
+                    else:
+                        print("Não entendi o que quis dizer")
                 case "LOGOUT":
-                    print("Obrigado por contar conosco")
-                    self.currentUser = None
+                    if uid:
+                        print("Obrigado por contar conosco")
+                        self.currentUser = None
+                    else:
+                        print("Não entendi o que quis dizer")
+
                 # Caso a entrada não exista nas opções
                 case _:
                     print("Não entendi o que quis dizer")
 
+    def SIGNUP(self):
+        def validatePassword(password, passwordConfirm):
+            if password != passwordConfirm:
+                print("Senhas não correspondem, tente novamente\n ")
+                password = input("Insira uma senha:\n")
+                passwordConfirm = input("Insira uma senha:\n")
+                return password, passwordConfirm
+            return password, passwordConfirm
 
+        def validateName(name):
+            if len(name) > 0:
+                if len(name) > 50:
+                    newName = input(
+                        "A entrada excedeu o limite de caracteres (50)\nTente novamente:\n"
+                    )
+                    return validateName(newName)
+                return name
+            newName = input("O tamanho da entrada não pode ser 0\nTente novamente:\n")
+
+        print("Seja bem vindo à tela de Cadastro!")
+        name = input("Insira seu nome completo:\n")
+        name = validateName(name)
+        userName = input("Insira seu nome completo:\n")
+        userName = validateName(userName)
+        password = input("Insira uma senha:\n")
+        passwordConfirm = input("Insira uma senha:\n")
+        password, passwordConfirm = validatePassword(password, passwordConfirm)
+        basicUserCollection.append(basicUser(name, userName, password))
+        updateUsers()
+
+    def findUser(uid):
+        flag = False
+        for user in userCollection:
+            if user.id == uid:
+                return user
+        if flag == False:
+            print("Usuário não encontrado, deseja tentar novamente?")
+
+
+main = Main()
