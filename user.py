@@ -5,9 +5,22 @@ premiumUserCollection = []
 userCollection = []
 basicUserCollection = []
 
+
 def updateUsers():
-    userCollection.update(basicUser,premiumUserCollection)
-    
+    for user in premiumUserCollection:
+        if user not in userCollection:
+            userCollection.append(user)
+    for user in basicUserCollection:
+        if user not in userCollection:
+            userCollection.append(user)
+
+
+def findUser(userName):
+    for user in userCollection:
+        if user.userName == userName:
+            return user
+    return None
+
 
 def validateMoneyAmount(moneyAmount):
     if moneyAmount < 0:
@@ -24,15 +37,16 @@ def validateMoneyAmount(moneyAmount):
 
 
 class User:
-    def __init__(self, name, username, password):
+    def __init__(self, name, userName, password):
         self.id = uuid.uuid4()
         self.name = name
-        self.username = username
+        self.userName = userName
         self.password = signup.encode(password)
         self.balance = 0
+        self.tax = 0.9
 
     def updateBalance(self):
-        moneyAmount = float(input("Insira quantos reais você deseja adicionar: "))
+        moneyAmount = float(input("Insira quantos reais você deseja adicionar: \n"))
         moneyAmount = validateMoneyAmount(moneyAmount)
         if moneyAmount == False:
             print("Operação cancelada")
@@ -42,26 +56,46 @@ class User:
             )
             self.balance += moneyAmount
 
+    def updateData(self):
+        flag = True
+        newUserName = input("Insira o novo nome de usuário\n")
+        for user in userCollection:
+            if user.userName == newUserName:
+                flag = False
+        if flag == True:
+            print("Nome de usuário trocado com sucesso")
+            self.userName = newUserName
+        else:
+            print("Nome já existente")
+
 
 class basicUser(User):
-    def __init__(self, name, username, password):
-        super().__init__(name, username, password)
+    def __init__(self, name, userName, password):
+        super().__init__(name, userName, password)
 
     def becomePremium(self, balance):
         if balance >= 200:
             self.balance -= 200
-            premiumUserCollection.update(
-                premiumUser(self.id, self.name, signup.decode(self.password))
+            premiumUserCollection.append(
+                premiumUser(
+                    self.id,
+                    self.name,
+                    self.userName,
+                    self.balance,
+                    signup.decode(self.password),
+                )
             )
-            del self
+            print("Plano premium vitalício ativado!\n")
+            userCollection.remove(self)
+            basicUserCollection.remove(self)
+            updateUsers()
         else:
             print("Saldo insuficiente")
 
 
 class premiumUser(User):
-    def __init__(self, id, name, username, password):
-        super().__init__(name, username, password)
+    def __init__(self, id, name, userName, balance, password):
+        super().__init__(name, userName, password)
         self.id = id
-
-
-basicUserCollection.append(basicUser("BATATA", "senha"))
+        self.tax = 0.95
+        self.balance = balance
