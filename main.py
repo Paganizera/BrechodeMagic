@@ -244,8 +244,8 @@ class Main:
                 del card
         else:
             if self.currentUser.balance >= card.price:
-                self.currentUser.balance -= int(card.price)
-                card.owner.balance += card.owner.tax * int(card.price)
+                self.currentUser.balance -= float(card.price)
+                card.owner.balance += card.owner.tax * float(card.price)
                 availableCardList.remove(card)
                 del card
             else:
