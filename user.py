@@ -88,6 +88,7 @@ class basicUser(User):
             print("Plano premium vitalício ativado!\n")
             userCollection.remove(self)
             basicUserCollection.remove(self)
+            print("Suas cartas foram recolhidas do estoque")
             updateUsers()
         else:
             print("Saldo insuficiente")
