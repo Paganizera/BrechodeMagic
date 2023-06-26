@@ -45,7 +45,6 @@ class Main:
                         validate = input(
                             "Para se tornar Premium é necessário R$200.00\nDeseja proceder? (S/N)\n"
                         )
-                        print()
                         if validate.upper() == "S":
                             userName = uid.userName
                             uid.becomePremium(uid.balance)
